@@ -1,5 +1,6 @@
 {
-    "type": "project",
+    "name": "kthiebault/e-recipe",
+    "description": "E-Recipe est une application web qui propose aux utilisateurs de créer différentes recettes.",
     "license": "proprietary",
     "minimum-stability": "dev",
     "prefer-stable": true,
