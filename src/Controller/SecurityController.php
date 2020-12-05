@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
@@ -21,7 +22,7 @@ class SecurityController extends AbstractController
         EntityManagerInterface $entityManager
     ): Response {
         if ($this->getUser()) {
-            return $this->redirectToRoute("home");
+            return $this->redirectToRoute("account_index");
         }
 
         $form = $this->createForm(RegistrationType::class);
@@ -38,5 +39,28 @@ class SecurityController extends AbstractController
         return $this->render("security/registration.html.twig", [
             "registration_form" => $form->createView()
         ]);
+    }
+
+    /**
+     * @Route("/login", name="security_login", methods={"GET", "POST"})
+     */
+    public function login(AuthenticationUtils $authenticationUtils): Response
+    {
+        if ($this->getUser()) {
+            return $this->redirectToRoute("account_index");
+        }
+
+        return $this->render("security/login.html.twig", [
+            "lastUsername" => $authenticationUtils->getLastUsername(),
+            "error" => $authenticationUtils->getLastAuthenticationError()
+        ]);
+    }
+
+    /**
+     * @Route("/logout", name="security_logout", methods={"GET"})
+     */
+    public function logout()
+    {
+        throw new \Exception("This should never be reached !");
     }
 }

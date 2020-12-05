@@ -24,10 +24,11 @@ class SecurityControllerTest extends WebTestCase
     {
         yield [Request::METHOD_GET, "/register"];
         yield [Request::METHOD_POST, "/register"];
+        yield [Request::METHOD_GET, "/login"];
     }
 
     /**
-     * @dataProvider goodDataProvider
+     * @dataProvider registerGoodDataProvider
      */
     public function testRegistrationSuccess(array $formData): void
     {
@@ -42,7 +43,7 @@ class SecurityControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
 
-    public function goodDataProvider(): \Generator
+    public function registerGoodDataProvider(): \Generator
     {
         yield [
             [
@@ -54,7 +55,7 @@ class SecurityControllerTest extends WebTestCase
     }
 
     /**
-     * @dataProvider badDataProvider
+     * @dataProvider registerBadDataProvider
      */
     public function testRegistrationFail(array $formData, string $errorMessage): void
     {
@@ -66,7 +67,7 @@ class SecurityControllerTest extends WebTestCase
         $this->assertSelectorTextSame("span.form-error-message", $errorMessage);
     }
 
-    public function badDataProvider(): \Generator
+    public function registerBadDataProvider(): \Generator
     {
         yield [
             [
@@ -116,5 +117,18 @@ class SecurityControllerTest extends WebTestCase
             ],
             "This value is too short. It should have 6 characters or more."
         ];
+    }
+
+    public function testLoginSuccess(): void
+    {
+        $client = static::createClient();
+        $client->request(Request::METHOD_GET, "/login");
+
+        $client->submitForm("Login", [
+            "email" => "example@example.com",
+            "password" => "example"
+        ]);
+
+        $this->assertResponseRedirects("/profile", Response::HTTP_FOUND);
     }
 }
