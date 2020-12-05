@@ -1,0 +1,31 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-5 mx-auto">
+            <h1>Login</h1>
+            {% if error %}
+                <div class="alert alert-danger text-center" role="alert">
+                    {{ error }}
+                </div>
+            {% endif %}
+            <form name="login" method="post">
+                <div id="login">
+                    <div class="form-group">
+                        <label for="login_email" class="required">Email: </label>
+                        <input type="email" id="login_email" {% if lastUsername %}value="{{ lastUsername }}"
+                               {% endif %}name="email" required="required" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="login_password" class="required">Password: </label>
+                        <input type="password" id="login_password" name="password" required="required" class="form-control"/>
+                    </div>
+                    <div>
+                        <input type="hidden" name="csrf" value="{{ csrf_token("security_login_form") }}">
+                    </div>
+                </div>
+                <button class="btn btn-primary btn-block">Login</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
