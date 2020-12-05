@@ -1,8 +1,13 @@
 {% extends "base.html.twig" %}
 
 {% block body %}
-    {{ form_start(registration_form) }}
-        {{ form_widget(registration_form) }}
-        <button>Register</button>
-    {{ form_end(registration_form) }}
+    <div class="row">
+        <div class="col-md-5 mx-auto">
+            <h1>Registration</h1>
+            {{ form_start(registration_form) }}
+                {{ form_widget(registration_form) }}
+                <button class="btn btn-primary btn-block">Register</button>
+            {{ form_end(registration_form) }}
+        </div>
+    </div>
 {% endblock %}
