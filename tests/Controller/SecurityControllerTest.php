@@ -63,7 +63,7 @@ class SecurityControllerTest extends WebTestCase
         $client->submitForm("Register", $formData);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
-        $this->assertSelectorTextSame("div > ul > li", $errorMessage);
+        $this->assertSelectorTextSame("span.form-error-message", $errorMessage);
     }
 
     public function badDataProvider(): \Generator
