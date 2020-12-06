@@ -27,6 +27,7 @@ class CategoryControllerTest extends WebTestCase
     public function urlProvider(): \Generator
     {
         yield [Request::METHOD_GET, "/category/create"];
+        yield [Request::METHOD_GET, "/category/update/1"];
     }
 
     /**
@@ -50,11 +51,32 @@ class CategoryControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
 
+    /**
+     * @dataProvider goodDataProvider
+     */
+    public function testUpdateSuccess(array $formData): void
+    {
+        $client = static::createClient();
+        $user = static::$container->get(UserRepository::class)->findOneByEmail("example@example.com");
+        $client->loginUser($user);
+
+        $client->request(Request::METHOD_GET, "/category/update/1");
+        $client->submitForm("Update", $formData);
+        $client->followRedirect();
+
+        $category = self::$container->get(CategoryRepository::class)
+            ->findOneBy(["name" => $formData["category[name]"]]);
+
+        $this->assertNotNull($category);
+        $this->assertSame($category->getName(), $formData["category[name]"]);
+        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+    }
+
     public function goodDataProvider(): \Generator
     {
         yield [
             [
-                "category[name]" => "example",
+                "category[name]" => "exampleTest",
             ]
         ];
     }
@@ -70,6 +92,22 @@ class CategoryControllerTest extends WebTestCase
 
         $client->request(Request::METHOD_GET, "/category/create");
         $client->submitForm("Create", $formData);
+
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+        $this->assertSelectorTextSame("span.form-error-message", $errorMessage);
+    }
+
+    /**
+     * @dataProvider badDataProvider
+     */
+    public function testUpdateFail(array $formData, string $errorMessage): void
+    {
+        $client = static::createClient();
+        $user = static::$container->get(UserRepository::class)->findOneByEmail("example@example.com");
+        $client->loginUser($user);
+        $client->request(Request::METHOD_GET, "/category/update/1");
+        $client->submitForm("Update", $formData);
 
 
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);

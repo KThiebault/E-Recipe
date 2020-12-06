@@ -21,14 +21,14 @@ class User implements UserInterface
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private int $id;
+    private ?int $id = null;
 
     /**
      * @Assert\NotBlank(groups={"register"})
      * @Assert\Email(groups={"register"})
      * @ORM\Column(type="string", length=180, unique=true)
      */
-    private string $email;
+    private ?string $email = null;
 
     /**
      * @ORM\Column(type="json")
@@ -38,13 +38,13 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string")
      */
-    private string $password;
+    private ?string $password = null;
 
     /**
      * @Assert\NotBlank(groups={"register"})
      * @Assert\Length(min="6", max="4096", groups={"register"})
      */
-    private ?string $plainPassword;
+    private ?string $plainPassword = null;
 
     /**
      * @ORM\OneToMany(targetEntity=Recipe::class, mappedBy="user", orphanRemoval=true)

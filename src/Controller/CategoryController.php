@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Category;
 use App\Form\Category\Categorytype;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -35,6 +36,24 @@ class CategoryController extends AbstractController
         }
 
         return $this->render("category/create.html.twig", [
+            "category_form" => $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/update/{id<[0-9]+>}", name="category_update", methods={"GET", "POST"})
+     */
+    public function update(Category $category, Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(CategoryType::class, $category);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+            return $this->redirectToRoute("category_create");
+        }
+
+        return $this->render("category/update.html.twig", [
             "category_form" => $form->createView()
         ]);
     }

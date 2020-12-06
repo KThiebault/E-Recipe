@@ -27,7 +27,7 @@ class Category
      * @Assert\NotBlank()
      * @Assert\Length(min="4", max="4096")
      */
-    private string $name;
+    private ?string $name;
 
     /**
      * @ORM\OneToMany(targetEntity=Recipe::class, mappedBy="categories")
@@ -55,7 +55,7 @@ class Category
         return $this->name;
     }
 
-    public function setName(string $name): self
+    public function setName(?string $name): self
     {
         $this->name = $name;
 
