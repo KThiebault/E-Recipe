@@ -47,19 +47,25 @@ class User implements UserInterface
     private ?string $plainPassword = null;
 
     /**
-     * @ORM\OneToMany(targetEntity=Recipe::class, mappedBy="user", orphanRemoval=true)
-     */
-    private $recipes;
-
-    /**
      * @ORM\OneToMany(targetEntity=Category::class, mappedBy="user", orphanRemoval=true)
      */
-    private $categories;
+    private Collection $categories;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Recipe::class, mappedBy="user", orphanRemoval=true)
+     */
+    private Collection $recipes;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Ingredient::class, mappedBy="user", orphanRemoval=true)
+     */
+    private Collection $ingredients;
 
     public function __construct()
     {
-        $this->recipes = new ArrayCollection();
         $this->categories = new ArrayCollection();
+        $this->recipes = new ArrayCollection();
+        $this->ingredients = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -126,9 +132,29 @@ class User implements UserInterface
         $this->plainPassword = null;
     }
 
-    public function getSalt()
+    public function getCategories(): Collection
     {
-        // not needed when using the "bcrypt" algorithm in security.yaml
+        return $this->categories;
+    }
+
+    public function addCategory(Category $category): self
+    {
+        if (!$this->categories->contains($category)) {
+            $this->categories[] = $category;
+            $category->setUser($this);
+        }
+        return $this;
+    }
+
+    public function removeCategory(Category $category): self
+    {
+        if ($this->categories->removeElement($category)) {
+            // set the owning side to null (unless already changed)
+            if ($category->getUser() === $this) {
+                $category->setUser(null);
+            }
+        }
+        return $this;
     }
 
     public function getRecipes(): Collection
@@ -142,7 +168,6 @@ class User implements UserInterface
             $this->recipes[] = $recipe;
             $recipe->setUser($this);
         }
-
         return $this;
     }
 
@@ -154,37 +179,36 @@ class User implements UserInterface
                 $recipe->setUser(null);
             }
         }
-
         return $this;
     }
 
-    /**
-     * @return Collection|Category[]
-     */
-    public function getCategories(): Collection
+    public function getIngredients(): Collection
     {
-        return $this->categories;
+        return $this->ingredients;
     }
 
-    public function addCategory(Category $category): self
+    public function addIngredient(Ingredient $ingredient): self
     {
-        if (!$this->categories->contains($category)) {
-            $this->categories[] = $category;
-            $category->setUser($this);
+        if (!$this->ingredients->contains($ingredient)) {
+            $this->ingredients[] = $ingredient;
+            $ingredient->setUser($this);
         }
-
         return $this;
     }
 
-    public function removeCategory(Category $category): self
+    public function removeIngredient(Ingredient $ingredient): self
     {
-        if ($this->categories->removeElement($category)) {
+        if ($this->categories->removeElement($ingredient)) {
             // set the owning side to null (unless already changed)
-            if ($category->getUser() === $this) {
-                $category->setUser(null);
+            if ($ingredient->getUser() === $this) {
+                $ingredient->setUser(null);
             }
         }
-
         return $this;
+    }
+
+    public function getSalt()
+    {
+        // not needed when using the "bcrypt" algorithm in security.yaml
     }
 }

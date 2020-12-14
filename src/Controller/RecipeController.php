@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Form\Recipe\RecipeType;
+use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,10 +19,16 @@ class RecipeController extends AbstractController
     /**
      * @Route("/create", name="recipe_create", methods={"GET", "POST"})
      */
-    public function create(Request $request): Response
+    public function create(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(RecipeType::class);
-        $form->handleRequest($request);
+        $form = $this->createForm(RecipeType::class)->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $recipe = $form->getData();
+            $recipe->setUser($this->getUser());
+            $entityManager->persist($recipe);
+            $entityManager->flush();
+        }
 
         return $this->render("recipe/create.html.twig", [
             "recipe_form" => $form->createView()
