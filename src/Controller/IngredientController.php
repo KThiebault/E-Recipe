@@ -69,4 +69,18 @@ class IngredientController extends AbstractController
             "ingredient_form" => $form->createView()
         ]);
     }
+
+    /**
+     * @Route("/delete/{id<[0-9]+>}", name="ingredient_delete", methods={"POST"})
+     * @IsGranted("OWNER", subject="ingredient")
+     */
+    public function delete(Ingredient $ingredient, Request $request, EntityManagerInterface $entityManager): Response
+    {
+        if (!$this->isCsrfTokenValid('delete', $request->request->get('token'))) {
+            return $this->redirectToRoute('ingredient_index');
+        }
+        $entityManager->remove($ingredient);
+        $entityManager->flush();
+        return $this->redirectToRoute("ingredient_index");
+    }
 }
