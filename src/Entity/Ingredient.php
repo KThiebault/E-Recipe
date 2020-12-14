@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\IngredientRepository;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -12,6 +13,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Ingredient
 {
+    public const STATE = [
+        0 => "Liquid",
+        1 => "Solid"
+    ];
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -22,9 +28,15 @@ class Ingredient
     /**
      * @ORM\Column(type="string", length=255, unique=true)
      * @Assert\NotBlank()
-     * @Assert\Length(min="4", max="4096")
      */
     private string $name;
+
+    /**
+     * @ORM\Column(type="smallint", options={"default": 0})
+     * @Assert\NotBlank()
+     * @Assert\Choice({0, 1})
+     */
+    private int $state;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="ingredients")
@@ -46,6 +58,22 @@ class Ingredient
     {
         $this->name = $name;
         return $this;
+    }
+
+    public function getState(): int
+    {
+        return $this->state;
+    }
+
+    public function setState(int $state): Ingredient
+    {
+        $this->state = $state;
+        return $this;
+    }
+
+    public function getStateType(): string
+    {
+        return self::STATE[$this->state];
     }
 
     public function getUser(): User
