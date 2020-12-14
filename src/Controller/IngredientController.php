@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Ingredient;
 use App\Form\Category\Categorytype;
 use App\Form\Ingredient\IngredientType;
 use App\Repository\IngredientRepository;
@@ -47,6 +48,24 @@ class IngredientController extends AbstractController
         }
 
         return $this->render("ingredient/create.html.twig", [
+            "ingredient_form" => $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/update/{id<[0-9]+>}", name="ingredient_update", methods={"GET", "POST"})
+     * @IsGranted("OWNER", subject="ingredient")
+     */
+    public function update(Ingredient $ingredient, Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(IngredientType::class, $ingredient)->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+            return $this->redirectToRoute("ingredient_index");
+        }
+
+        return $this->render("ingredient/update.html.twig", [
             "ingredient_form" => $form->createView()
         ]);
     }

@@ -29,14 +29,14 @@ class Ingredient
      * @ORM\Column(type="string", length=255, unique=true)
      * @Assert\NotBlank()
      */
-    private string $name;
+    private ?string $name;
 
     /**
      * @ORM\Column(type="smallint", options={"default": 0})
      * @Assert\NotBlank()
      * @Assert\Choice({0, 1})
      */
-    private int $state;
+    private ?int $state;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="ingredients")
@@ -54,7 +54,7 @@ class Ingredient
         return $this->name;
     }
 
-    public function setName(string $name): Ingredient
+    public function setName(?string $name): Ingredient
     {
         $this->name = $name;
         return $this;
@@ -65,7 +65,7 @@ class Ingredient
         return $this->state;
     }
 
-    public function setState(int $state): Ingredient
+    public function setState(?int $state): Ingredient
     {
         $this->state = $state;
         return $this;

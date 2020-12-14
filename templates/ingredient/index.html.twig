@@ -7,6 +7,7 @@
         <tr>
             <th scope="col">Name</th>
             <th scope="col">state</th>
+            <th scope="col">Actions</th>
         </tr>
         </thead>
         <tbody>
@@ -14,6 +15,9 @@
             <tr>
                 <td>{{ ingredient.name }}</td>
                 <td>{{ ingredient.getStateType }}</td>
+                <td class="d-flex">
+                    <a href="{{ path("ingredient_update", { id: ingredient.id }) }}" class="btn btn-success mr-2">Update</a>
+                </td>
             </tr>
         {% endfor %}
         </tbody>
