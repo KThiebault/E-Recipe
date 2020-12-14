@@ -1,0 +1,13 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-5 mx-auto">
+            <h1>Create your recipe</h1>
+            {{ form_start(recipe_form) }}
+                {{ form_widget(recipe_form) }}
+                <button class="btn btn-primary btn-block">Create</button>
+            {{ form_end(recipe_form) }}
+        </div>
+    </div>
+{% endblock %}

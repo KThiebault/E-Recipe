@@ -1,0 +1,31 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <a href="{{ path("ingredient_create") }}" class="btn btn-primary mb-4">Add Ingredient</a>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">state</th>
+            <th scope="col">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for ingredient in ingredients %}
+            <tr>
+                <td>{{ ingredient.name }}</td>
+                <td>{{ ingredient.getStateType }}</td>
+                <td class="d-flex">
+                    <a href="{{ path("ingredient_update", { id: ingredient.id }) }}" class="btn btn-success mr-2">Update</a>
+                    <form action="{{ path("ingredient_delete", {id: ingredient.id }) }}" method="post" data-confirmation="true" id="delete-form">
+                        <input type="hidden" name="token" value="{{ csrf_token('delete') }}" />
+                        <button type="submit" class="btn btn-danger">
+                            Delete
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
